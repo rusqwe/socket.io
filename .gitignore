@@ -1,0 +1,45 @@
+# Зависимости
+node_modules/
+dist/
+jspm_packages/
+
+# Логи
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# Данные среды выполнения и PID
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Переменные окружения (секреты)
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Кэш и артефакты
+.npm
+.eslintcache
+.parcel-cache
+.cache
+*.tsbuildinfo
+.nyc_output
+coverage/
+
+# Системные файлы и редакторы
+.DS_Store
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+```
