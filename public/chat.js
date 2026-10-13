@@ -12,7 +12,8 @@ function getElements() {
         currentRoomName: document.querySelector('#current-room-name'),
         userBadge: document.getElementById('user-badge'),
         typingIndicator: document.getElementById('typing-indicator'),
-        roomMembersEl: document.getElementById('room-members'),
+        participantsListEl: document.getElementById('participants-list'),
+        participantsCountEl: document.getElementById('participants-count'),
         connectionStatusEl: document.getElementById('connection-status'),
         statusTextEl: document.querySelector('.status-text'),
     };
@@ -60,11 +61,33 @@ socket.on('rooms-list', (data) => {
 });
 // ===== Список участников =====
 socket.on('room-members', (members) => {
+    el.participantsListEl.innerHTML = '';
+    el.participantsCountEl.textContent = String(members.length);
     if (members.length === 0) {
-        el.roomMembersEl.textContent = '';
         return;
     }
-    el.roomMembersEl.innerHTML = `Участники: <span>${members.join(', ')}</span>`;
+    members.forEach((member) => {
+        const li = document.createElement('li');
+        li.className = 'participant-item';
+        const dot = document.createElement('span');
+        dot.className = 'participant-dot';
+        const name = document.createElement('span');
+        name.className = 'participant-name';
+        name.textContent = member;
+        if (member === username) {
+            const selfLabel = document.createElement('span');
+            selfLabel.className = 'participant-self';
+            selfLabel.textContent = '(вы)';
+            li.appendChild(dot);
+            li.appendChild(name);
+            li.appendChild(selfLabel);
+        }
+        else {
+            li.appendChild(dot);
+            li.appendChild(name);
+        }
+        el.participantsListEl.appendChild(li);
+    });
 });
 function switchRoom(roomId) {
     // Покидаем предыдущую комнату
@@ -188,7 +211,8 @@ socket.on('disconnect', (_reason) => {
     el.statusTextEl.textContent = 'Отключено';
     el.messageInput.disabled = true;
     el.messageInput.placeholder = 'Нет подключения к серверу';
-    el.roomMembersEl.innerHTML = '';
+    el.participantsListEl.innerHTML = '';
+    el.participantsCountEl.textContent = '0';
     appendSystemMessage('⚠️ Соединение с сервером потеряно');
 });
 socket.on('connect', () => {

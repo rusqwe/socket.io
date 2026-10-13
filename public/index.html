@@ -26,14 +26,24 @@
         <span class="dot"></span>
         <span class="status-text">Подключено</span>
       </div>
-      <div class="room-members" id="room-members"></div>
       <div class="user-badge" id="user-badge"></div>
     </div>
-    <div class="messages-area" id="messages-area"></div>
-    <div class="typing-indicator" id="typing-indicator"></div>
-    <div class="input-area">
-      <input type="text" id="message-input" placeholder="Напишите сообщение..." maxlength="1000">
-      <button id="send-btn">Отправить</button>
+    <div class="chat-body">
+      <div class="messages-container">
+        <div class="messages-area" id="messages-area"></div>
+        <div class="typing-indicator" id="typing-indicator"></div>
+        <div class="input-area">
+          <input type="text" id="message-input" placeholder="Напишите сообщение..." maxlength="1000">
+          <button id="send-btn">Отправить</button>
+        </div>
+      </div>
+      <div class="participants-panel" id="participants-panel">
+        <div class="participants-header">
+          <h3>Участники</h3>
+          <span class="participants-count" id="participants-count">0</span>
+        </div>
+        <ul class="participants-list" id="participants-list"></ul>
+      </div>
     </div>
   </div>
   <audio id="notification-sound" src="notification.mp3" preload="auto"></audio>

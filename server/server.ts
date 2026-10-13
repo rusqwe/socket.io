@@ -88,7 +88,7 @@ io.on('connection', (socket: TypedSocket) => {
     // Отправляем историю сообщений при входе в комнату
     sendHistory(socket, roomId);
 
-    // Уведомляем остальных в комнате
+    // Уведомляем остальных в комнате, кроме вызвавшего
     socket.to(roomId).emit('system-message', {
       text: `${username} вошёл в комнату`,
       room: roomId,
@@ -115,6 +115,7 @@ io.on('connection', (socket: TypedSocket) => {
       timestamp: new Date().toISOString(),
     };
     insertRoomsMessage(data.room, message);
+    //отправка всем
     io.to(data.room).emit('chat-message', message);
   });
 

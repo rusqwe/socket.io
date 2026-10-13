@@ -11,7 +11,8 @@ interface ChatElements {
   currentRoomName: HTMLHeadingElement;
   userBadge: HTMLDivElement;
   typingIndicator: HTMLDivElement;
-  roomMembersEl: HTMLDivElement;
+  participantsListEl: HTMLUListElement;
+  participantsCountEl: HTMLSpanElement;
   connectionStatusEl: HTMLDivElement;
   statusTextEl: HTMLSpanElement;
 }
@@ -29,7 +30,8 @@ function getElements(): ChatElements {
     currentRoomName: document.querySelector('#current-room-name') as HTMLHeadingElement,
     userBadge: document.getElementById('user-badge') as HTMLDivElement,
     typingIndicator: document.getElementById('typing-indicator') as HTMLDivElement,
-    roomMembersEl: document.getElementById('room-members') as HTMLDivElement,
+    participantsListEl: document.getElementById('participants-list') as HTMLUListElement,
+    participantsCountEl: document.getElementById('participants-count') as HTMLSpanElement,
     connectionStatusEl: document.getElementById('connection-status') as HTMLDivElement,
     statusTextEl: document.querySelector('.status-text') as HTMLSpanElement,
   };
@@ -107,11 +109,38 @@ socket.on('rooms-list', (data: Room[]) => {
 
 // ===== Список участников =====
 socket.on('room-members', (members: string[]) => {
+  el.participantsListEl.innerHTML = '';
+  el.participantsCountEl.textContent = String(members.length);
+
   if (members.length === 0) {
-    el.roomMembersEl.textContent = '';
     return;
   }
-  el.roomMembersEl.innerHTML = `Участники: <span>${members.join(', ')}</span>`;
+
+  members.forEach((member) => {
+    const li = document.createElement('li');
+    li.className = 'participant-item';
+
+    const dot = document.createElement('span');
+    dot.className = 'participant-dot';
+
+    const name = document.createElement('span');
+    name.className = 'participant-name';
+    name.textContent = member;
+
+    if (member === username) {
+      const selfLabel = document.createElement('span');
+      selfLabel.className = 'participant-self';
+      selfLabel.textContent = '(вы)';
+      li.appendChild(dot);
+      li.appendChild(name);
+      li.appendChild(selfLabel);
+    } else {
+      li.appendChild(dot);
+      li.appendChild(name);
+    }
+
+    el.participantsListEl.appendChild(li);
+  });
 });
 
 function switchRoom(roomId: string): void {
@@ -253,7 +282,8 @@ socket.on('disconnect', (_reason: string) => {
   el.statusTextEl.textContent = 'Отключено';
   el.messageInput.disabled = true;
   el.messageInput.placeholder = 'Нет подключения к серверу';
-  el.roomMembersEl.innerHTML = '';
+  el.participantsListEl.innerHTML = '';
+  el.participantsCountEl.textContent = '0';
   appendSystemMessage('⚠️ Соединение с сервером потеряно');
 });
 
